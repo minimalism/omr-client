@@ -1,6 +1,5 @@
-import Greeting from './greeting';
+import App from './components/mainwindow';
 
-const greeting = new Greeting();
+const app = new App();
 
-greeting.hello();
-
+app.display();

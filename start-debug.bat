@@ -1,1 +1,1 @@
-npm start
+gulp & npm run-script start -- %1=%2
