@@ -4,3 +4,4 @@ typings
 logs
 npm-debug.log*
 src/app/config.ts
+.DS_Store

@@ -24,22 +24,15 @@ class MainWindow extends React.Component<{}, AppState> {
         this.state = new AppState();
     }
 
-    setUser(user : User){
-        this.setState({ user });
-    }
+    setUser = (user : User) => this.setState({ user });
 
     render() {
-        if (this.state.user){
-            return (
-                <div className="main-window">
-                    <h1>Welcome, { this.state.user.name }!</h1>
-                    <GamesList />
-                </div>
-            );
-        }
-        else{
-            return <Auth setUser = { (user : User) => this.setUser(user) } />;    
-        }
+        const { user } = this.state;
+        return (
+          <div>
+            <Auth setUser={this.setUser} user={user} />
+            { user && <GamesList />}
+          </div>
+        )
     }
 };
-
