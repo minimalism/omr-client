@@ -14,26 +14,11 @@
                 "--remote-debugging-port=9753",
                 "--enable-logging"
             ],
-            //"url": "${workspaceRoot}/dist/index.html",
             "preLaunchTask": "default",
             "address": "127.0.0.1",
-            "port": 9753,
+            "port": 9753,   // Can be anything that matches your --remote-debugging-port in runtime args
             "sourceMaps": true,
             "webRoot" : "${workspaceRoot}/dist/"
         }
-        /*{
-            "name": "Launch with NPM",
-            "type": "node",
-            "request": "launch",
-            "stopOnEntry": false,
-            "cwd": "${workspaceRoot}",
-            "runtimeExecutable": "${workspaceRoot}\\start-debug.bat"
-        },
-        {
-            "type": "node",
-            "request": "attach",
-            "name": "Attach to Process",
-            "port": 5858
-        }*/
     ]
 }
