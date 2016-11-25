@@ -18,9 +18,9 @@ interface AuthProps {
 };
 
 class AuthState {
-    email : string;
-    password : string;
-    remember : boolean;
+    email : string = '';
+    password : string = '';
+    remember : boolean = false;
 }
 
 export default class Auth extends React.Component<AuthProps, AuthState> {
