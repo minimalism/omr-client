@@ -1,1 +1,0 @@
-D:\programs\Microsoft VS Code\bin;C:\Users\Andreas\AppData\Roaming\npm;D:\programs\nodejs

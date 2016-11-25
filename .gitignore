@@ -3,3 +3,4 @@ dist
 typings
 logs
 npm-debug.log*
+src/app/config.ts

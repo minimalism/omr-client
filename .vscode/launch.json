@@ -5,6 +5,23 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Debug Renderer Process",
+            "type": "chrome",
+            "request": "launch",
+            "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd",
+            "runtimeArgs": [
+                "${workspaceRoot}/dist/main.js",
+                "--remote-debugging-port=9753",
+                "--enable-logging"
+            ],
+            //"url": "${workspaceRoot}/dist/index.html",
+            "preLaunchTask": "default",
+            "address": "127.0.0.1",
+            "port": 9753,
+            "sourceMaps": true,
+            "webRoot" : "${workspaceRoot}/dist/"
+        }
+        /*{
             "name": "Launch with NPM",
             "type": "node",
             "request": "launch",
@@ -17,6 +34,6 @@
             "request": "attach",
             "name": "Attach to Process",
             "port": 5858
-        }
+        }*/
     ]
 }
