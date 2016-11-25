@@ -6,7 +6,7 @@ export class User {
     id : string;
 
     constructor(fbUser : any){
-        this.name = fbUser.displayName;
+        this.name = fbUser.name;
         this.id = fbUser.guid;
         this.email = fbUser.email;
     }
@@ -35,7 +35,6 @@ export default class Auth extends React.Component<AuthProps, AuthState> {
                 this.props.setUser(null);
             }
         }.bind(this));
-
     }
 
     displayError(error : Error){
