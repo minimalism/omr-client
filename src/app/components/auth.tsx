@@ -14,6 +14,7 @@ export class User {
 
 interface AuthProps {
     setUser : (User) => void;
+    user : User;
 };
 
 class AuthState {
@@ -55,28 +56,33 @@ export default class Auth extends React.Component<AuthProps, AuthState> {
         }, this.displayError);
     }
 
-    updateEmail(e){
-        var state = this.state;
-        state.email = e.target.value;
+    updateForm = (name) => (e) => {
+        const state = this.state;
+        state[name] = e.target.value;
         this.setState(state);
     }
 
-    updatePassword(e){
-        var state = this.state;
-        state.password = e.target.value;
-        this.setState(state);
+    renderSignedIn = (user) => (
+        <div>
+            <h1>{`Welcome, ${user.name}!`}</h1>
+            <button onClick={this.signOut}>Sign out</button>
+        </div>);
+
+    renderSignedOut() {
+      return (
+          <form action="/login" method="post">
+              <label><b>Email</b></label>
+              <input type="text" placeholder="Enter Email" value={this.state.email} onChange={this.updateForm('email')} name="email" required />
+              <label><b>Password</b></label>
+              <input type="password" placeholder="Enter Password" value={this.state.password} onChange={this.updateForm('password')} name="password" required />
+              <input type="button" value="Login" onClick= { () => this.signIn() } />
+              <input type="button" value="Register" onClick= { () => this.register() } />
+          </form>
+      );
     }
 
     render() {
-        return (
-            <form action="/login" method="post">
-                <label><b>Email</b></label>
-                <input type="text" placeholder="Enter Email" value= { this.state.email } onChange = { this.updateEmail.bind(this) } name="email" required />
-                <label><b>Password</b></label>
-                <input type="password" placeholder="Enter Password" value= { this.state.password } onChange = { this.updatePassword.bind(this) } name="password" required />
-                <input type="button" value="Login" onClick= { () => this.signIn() } />
-                <input type="button" value="Register" onClick= { () => this.register() } />
-            </form>
-        );    
+        const { user } = this.props;
+        return user ? this.renderSignedIn(user) : this.renderSignedOut();
     }
 };
