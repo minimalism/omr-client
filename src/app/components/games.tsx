@@ -22,19 +22,19 @@ export default class GamesList extends React.Component<{}, GamesListState> {
         );
     }
 
-    gameAdded(gameData){
+    gameAdded = (gameData) => {
         var state = this.state;
         state.gameIds.push(gameData.key);
         this.setState(state);
-    }
+    };
 
-    gameRemoved(gameData){
+    gameRemoved = (gameData) => {
         alert("todo");
     }
 
     componentWillMount(){
-        this.ref.on('child_added', this.gameAdded.bind(this));
-        this.ref.on('child_removed', this.gameRemoved.bind(this));
+        this.ref.on('child_added', this.gameAdded);
+        this.ref.on('child_removed', this.gameRemoved);
     }
 
     componentWillUnmount(){
