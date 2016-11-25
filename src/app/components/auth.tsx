@@ -50,7 +50,7 @@ export default class Auth extends React.Component<AuthProps, AuthState> {
         firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password).catch(this.displayError);
     }
 
-    signOut(){
+    signOut = () => {
         firebase.auth().signOut().then(() => {
             this.props.setUser(null);   // Succesfully signed out
         }, this.displayError);

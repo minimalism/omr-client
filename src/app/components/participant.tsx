@@ -31,11 +31,11 @@ export default class Participant extends React.Component<ParticipantProps, Parti
     }
 
     componentWillMount(){
-        firebase.database().ref().child('/participants/' + this.props.id ).on('value', this.participantDataChanged.bind(this));
+        firebase.database().ref().child(`/participants/${this.props.id}`).on('value', this.participantDataChanged.bind(this));
     }
 
     componentWillUnmount(){
-        firebase.database().ref().child('/participants/' + this.props.id).off();
+        firebase.database().ref().child(`/participants/${this.props.id}`).off();
     }    
 
     render(){

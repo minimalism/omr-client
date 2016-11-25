@@ -23,25 +23,25 @@ export default class GamesList extends React.Component<{}, GamesListState> {
                 <div className="game-list-menu">
                     <input placeholder="New game name" 
                         value = { this.state.newGameName } 
-                        onChange = { this.newGameNameChanged.bind(this) }/><button onClick = { () => this.createGame() } >New game</button>
+                        onChange = { this.newGameNameChanged }/><button onClick = { this.createGame } >New game</button>
                 </div>
             </div>
         );
     }
     
-    newGameNameChanged(e){
-        var state = this.state;
+    newGameNameChanged = (e) => {
+        let state = this.state;
         state.newGameName = e.target.value;
         this.setState(state);
     }
 
-    createGame(){
-        var currentUserId = firebase.auth().currentUser.uid;
+    createGame = () => {
+        const currentUserId = firebase.auth().currentUser.uid;
 
-        var update = {};
+        let update = {};
 
-        var newGameKey = firebase.database().ref().child('/games').push().key;
-        var gameData = {
+        const newGameKey = firebase.database().ref().child('/games').push().key;
+        let gameData = {
             name: this.state.newGameName,
             host: currentUserId,
             status: 0
@@ -51,15 +51,15 @@ export default class GamesList extends React.Component<{}, GamesListState> {
 
         firebase.database().ref().update(update).then((response) => {
             /* Game creation success */ 
-            var participantUpdate = {};
+            let participantUpdate = {};
 
-            var newParticipantKey = firebase.database().ref().child('/participants').push().key;
-            var participantData = {
+            const newParticipantKey = firebase.database().ref().child('/participants').push().key;
+            let participantData = {
                 user : currentUserId,
                 game : newGameKey
             };
 
-            var gameParticipantData = {
+            let gameParticipantData = {
                 participant: newParticipantKey
             };
 
@@ -81,13 +81,13 @@ export default class GamesList extends React.Component<{}, GamesListState> {
     }
 
     gameAdded = (gameData) => {
-        var state = this.state;
+        const state = this.state;
         state.gameIds.push(gameData.key);
         this.setState(state);
     }
 
     gameRemoved = (gameData) => {
-        var state = this.state;
+        const state = this.state;
         _.pull(state.gameIds, gameData.key);
         this.setState(state);
     }
