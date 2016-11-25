@@ -1,8 +1,8 @@
 import React from 'react';
 import Participant from './participant';
-import * as _ from 'lodash';
-import * as Electron from 'electron';
-import * as fs from 'fs';
+import _ from 'lodash';
+import Electron from 'electron';
+import fs from 'fs';
 import FormData from 'form-data';
 import Config from '../config';
 
@@ -96,7 +96,7 @@ export default class Game extends React.Component<GameProperties, GameData> {
 
     delete = () => {
         // First remove all participants of this game
-        const allParticipantsDeleted = Promise.all( this.state.participants.map( participant => { 
+        const allParticipantsDeleted = Promise.all( this.state.participants.map( participant => {
             return firebase.database().ref().child(`/participants/${participant}`).remove()
         }));
 
@@ -142,10 +142,10 @@ export default class Game extends React.Component<GameProperties, GameData> {
                 <div className="game-name">{ this.state.name }</div>
                 <div className="game-participant-count">({ this.state.participants.length } players)</div>
                 <div className="game-options">
-                { 
-                    this.getGameOptions().map( option => { 
-                        return <button key={ option.id } className="game-option" onClick= { () => { option.callback() } }> { option.title } </button> 
-                    } ) 
+                {
+                    this.getGameOptions().map( option => {
+                        return <button key={ option.id } className="game-option" onClick= { () => { option.callback() } }> { option.title } </button>
+                    } )
                 }
                 </div>
             </div>
