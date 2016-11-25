@@ -80,21 +80,21 @@ export default class GamesList extends React.Component<{}, GamesListState> {
         });
     }
 
-    gameAdded(gameData){
+    gameAdded = (gameData) => {
         var state = this.state;
         state.gameIds.push(gameData.key);
         this.setState(state);
     }
 
-    gameRemoved(gameData){
+    gameRemoved = (gameData) => {
         var state = this.state;
         _.pull(state.gameIds, gameData.key);
         this.setState(state);
     }
 
     componentWillMount(){
-        firebase.database().ref().child('/games').on('child_added', this.gameAdded.bind(this));
-        firebase.database().ref().child('/games').on('child_removed', this.gameRemoved.bind(this));
+        firebase.database().ref().child('/games').on('child_added', this.gameAdded);
+        firebase.database().ref().child('/games').on('child_removed', this.gameRemoved);
     }
 
     componentWillUnmount(){
