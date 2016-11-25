@@ -13,6 +13,19 @@
             "args": [],
             "isBuildCommand": true,
             "isWatching": false,
+            "showOutput": "always",
+            "problemMatcher": [
+                "$lessCompile",
+                "$tsc",
+                "$jshint"
+            ]
+        },
+        {
+            "taskName": "debug",
+            "args": [],
+            "isBuildCommand": true,
+            "isWatching": true,
+            "showOutput": "never",
             "problemMatcher": [
                 "$lessCompile",
                 "$tsc",

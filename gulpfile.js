@@ -5,6 +5,7 @@ var gulp = require('gulp'),
     rename = require('gulp-rename'),
     concat = require('gulp-concat'),
     sourcemaps = require('gulp-sourcemaps'),
+    sass = require('gulp-sass'),
     typescript = require('gulp-typescript');
 
 gulp.task('default', function (done) {
@@ -17,7 +18,23 @@ gulp.task('default', function (done) {
             'copy-app-package-file',
             'copy-app-main-file'
         ],
+        'build-sass',
         'build-html'
+    );
+});
+
+gulp.task('debug', function(done){
+    inSequence(
+        'clear',
+        [
+            'build-vendor',
+            'build-app',
+            'copy-app-package-file',
+            'copy-app-main-file'
+        ],
+        'build-sass',
+        'build-html',
+        'watch-sass'
     );
 });
 
@@ -35,6 +52,16 @@ gulp.task('copy-app-package-file', function () {
 gulp.task('copy-app-main-file', function () {
     return gulp.src('src/main.js')
         .pipe(gulp.dest('dist'));
+});
+
+gulp.task('build-sass', function(){
+    return gulp.src('./src/style/**/*.scss')
+        .pipe(sass().on('error', sass.logError))
+        .pipe(gulp.dest('dist'));
+});
+
+gulp.task('watch-sass', function(){
+    gulp.watch('./src/style/**/*.scss', ['build-sass']);
 });
 
 gulp.task('build-vendor', function(){

@@ -1,0 +1,20 @@
+html, body, .main-window{
+    height:100%;
+}
+
+.main-window{
+    display: flex;
+    flex-direction: column;
+}
+h1{
+    flex-grow:0;
+}
+
+#content{
+    height:100%;
+}
+
+body{
+    background-color: $color-secondary-1-0;
+    color: $color-secondary-1-1;
+}
