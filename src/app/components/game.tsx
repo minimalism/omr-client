@@ -134,22 +134,23 @@ export default class Game extends React.Component<GameProperties, GameData> {
     }
 
     render(){
+        const { name, participants } = this.state;
 
         return (<div className="game">
             <div className="game-header">
-                <div className="game-name">{ this.state.name }</div>
-                <div className="game-participant-count">({ this.state.participants.length } players)</div>
+                <div className="game-name">{name}</div>
+                <div className="game-participant-count">({participants.length} players)</div>
                 <div className="game-options">
                 {
-                    this.getGameOptions().map( option => {
-                        return <button key={ option.id } className="game-option" onClick= { () => { option.callback() } }> { option.title } </button>
-                    } )
+                    this.getGameOptions().map(option => (
+                        <button key={option.id} className="game-option" onClick={() => option.callback()}>{option.title}</button>
+                    ))
                 }
                 </div>
             </div>
             <div className="game-details">
                 <div className="game-participant-list">
-                    { this.state.participants.map( participantId => { return <Participant key={ participantId } id= { participantId }/> } ) }
+                    {participants.map(participantId => <Participant key={participantId} id={participantId}/> )}
                 </div>
             </div>
         </div>);
