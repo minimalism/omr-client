@@ -39,12 +39,10 @@ export default class Game extends React.Component<GameProperties, GameData> {
             state.host = values.host;
             state.name = values.name;
             state.status = values.status;
-            if (values.participants){
-                state.participants = values.participants.map( participant => { return participant.participant; } );
-            }
-            else{
-                state.participants = [];
-            }
+            state.participants = values.participants
+                ? values.participants.map(participant => participant.participant)
+                : [];
+
             this.setState(state);
         }
     }
@@ -64,7 +62,7 @@ export default class Game extends React.Component<GameProperties, GameData> {
         form.append('game', this.state.id);
         form.append('user', currentUserId);
         form.append('file', fs.createReadStream(path));
-        const { hostname, uploadPath, port }= new Config().getAPISettings();
+        const { hostname, uploadPath, port } = new Config().getAPISettings();
         form.submit({
             host: hostname,
             path: uploadPath,
