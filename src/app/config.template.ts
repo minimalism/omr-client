@@ -1,13 +1,19 @@
-/*const config = {
-    firebase : {
-        apiKey: '',
-        authDomain: '',
-        databaseURL: '',
-        storageBucket: '',
-        messagingSenderId: ''
-    },
-    api : {
-        hostname : 'localhost',
-        post : 8000
+export default class Config {
+
+    public getFirebaseSettings(){
+        return  {
+            apiKey: "",
+            authDomain: "",
+            databaseURL: "",
+            storageBucket: "",
+            messagingSenderId: ""
+        }
+    };
+
+    public getAPISettings(){
+        return {
+            hostname : 'localhost',
+            post : 8000
+        }
     }
-};*/
+};
