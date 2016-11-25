@@ -69,7 +69,7 @@ export default class Auth extends React.Component<AuthProps, AuthState> {
 
     render() {
         return (
-            <form action="/login" method="post">
+            <form>
                 <label><b>Email</b></label>
                 <input type="text" placeholder="Enter Email" value= { this.state.email } onChange = { this.updateEmail.bind(this) } name="email" required />
                 <label><b>Password</b></label>

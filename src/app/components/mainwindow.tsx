@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {User} from './auth';
 import Auth from './auth';
-import GamesList from './games';
+import GamesList from './gamelist';
 
 export default class App {
     display(){
@@ -31,7 +31,7 @@ class MainWindow extends React.Component<{}, AppState> {
     render() {
         if (this.state.user){
             return (
-                <div>
+                <div className="main-window">
                     <h1>Welcome, { this.state.user.name }!</h1>
                     <GamesList />
                 </div>
