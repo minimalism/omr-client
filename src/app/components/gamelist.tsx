@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 
 class GamesListState {
     gameIds : string[] = [];
-    newGameName : string;
+    newGameName : string = '';
 }
 
 export default class GamesList extends React.Component<{}, GamesListState> {
@@ -21,14 +21,14 @@ export default class GamesList extends React.Component<{}, GamesListState> {
                     { this.state.gameIds.map((gameId) => { return <Game key={ gameId } id={ gameId }/> }) }
                 </div>
                 <div className="game-list-menu">
-                    <input placeholder="New game name" 
-                        value = { this.state.newGameName } 
+                    <input placeholder="New game name"
+                        value = { this.state.newGameName }
                         onChange = { this.newGameNameChanged }/><button onClick = { this.createGame } >New game</button>
                 </div>
             </div>
         );
     }
-    
+
     newGameNameChanged = (e) => {
         let state = this.state;
         state.newGameName = e.target.value;
@@ -50,7 +50,7 @@ export default class GamesList extends React.Component<{}, GamesListState> {
         update['games/' + newGameKey] = gameData;
 
         firebase.database().ref().update(update).then((response) => {
-            /* Game creation success */ 
+            /* Game creation success */
             let participantUpdate = {};
 
             const newParticipantKey = firebase.database().ref().child('/participants').push().key;
@@ -64,14 +64,14 @@ export default class GamesList extends React.Component<{}, GamesListState> {
             };
 
             participantUpdate['participants/' + newParticipantKey] = participantData;
-            participantUpdate['games/' + newGameKey + '/participants/0'] = gameParticipantData; 
+            participantUpdate['games/' + newGameKey + '/participants/0'] = gameParticipantData;
 
             firebase.database().ref().update(participantUpdate).then(() => {
                 // Game participant creation success
                 // TODO: Commit transaction
-            
+
             }, (fail) => {
-                // Game patricipant creation fail  
+                // Game patricipant creation fail
                 // TODO: Roll back transaction
             })
 
