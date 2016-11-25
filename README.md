@@ -13,5 +13,6 @@ npm start
 
 ## Credits
 Big thanks to the fish man
+
 Based on: 
 - https://github.com/claudioc/electron-typescript-react-quick-start
