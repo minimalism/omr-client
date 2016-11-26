@@ -29,7 +29,7 @@ class MainWindow extends React.Component<{}, AppState> {
     render() {
         const { user } = this.state;
         return (
-          <div>
+          <div className="main-window">
             <Auth setUser={this.setUser} user={user} />
             { user && <GamesList />}
           </div>

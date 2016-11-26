@@ -23,7 +23,10 @@ export default class GamesList extends React.Component<{}, GamesListState> {
                 <div className="game-list-menu">
                     <input placeholder="New game name" 
                         value = { this.state.newGameName } 
-                        onChange = { this.newGameNameChanged }/><button onClick = { this.createGame } >New game</button>
+                        onChange = { this.newGameNameChanged }/>
+                    <button disabled={ !this.state.newGameName || this.state.newGameName.length == 0 } onClick = { this.createGame }>
+                        New game
+                    </button>
                 </div>
             </div>
         );
@@ -40,31 +43,24 @@ export default class GamesList extends React.Component<{}, GamesListState> {
 
         let update = {};
 
-        const newGameKey = firebase.database().ref().child('/games').push().key;
+        const newGameKey = firebase.database().ref().child('games').push().key;
         let gameData = {
             name: this.state.newGameName,
             host: currentUserId,
             status: 0
         };
-
-        update['games/' + newGameKey] = gameData;
+        update[`games/${newGameKey}`] = gameData;
 
         firebase.database().ref().update(update).then((response) => {
             /* Game creation success */ 
             let participantUpdate = {};
 
-            const newParticipantKey = firebase.database().ref().child('/participants').push().key;
+            const newParticipantKey = firebase.database().ref().child(`games/${newGameKey}/participants`).push().key;
             let participantData = {
                 user : currentUserId,
-                game : newGameKey
+                ordinal : 0
             };
-
-            let gameParticipantData = {
-                participant: newParticipantKey
-            };
-
-            participantUpdate['participants/' + newParticipantKey] = participantData;
-            participantUpdate['games/' + newGameKey + '/participants/0'] = gameParticipantData; 
+            participantUpdate[`games/${newGameKey}/participants/${newParticipantKey}`] = participantData; 
 
             firebase.database().ref().update(participantUpdate).then(() => {
                 // Game participant creation success

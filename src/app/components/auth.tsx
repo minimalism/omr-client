@@ -6,7 +6,8 @@ export class User {
     id : string;
 
     constructor(fbUser : any){
-        this.name = fbUser.name;
+        this.name = fbUser.displayName;
+        if (!this.name) this.name = "Anonymous";
         this.id = fbUser.guid;
         this.email = fbUser.email;
     }
@@ -63,20 +64,22 @@ export default class Auth extends React.Component<AuthProps, AuthState> {
     }
 
     renderSignedIn = (user) => (
-        <div>
+        <div className="auth-header">
             <h1>{`Welcome, ${user.name}!`}</h1>
             <button onClick={this.signOut}>Sign out</button>
         </div>);
 
+    isValid = () => {
+        return this.state.email && this.state.email.length > 0 && this.state.password && this.state.password.length > 0;
+    }
+
     renderSignedOut() {
       return (
-          <form action="/login" method="post">
-              <label><b>Email</b></label>
-              <input type="text" placeholder="Enter Email" value={this.state.email} onChange={this.updateForm('email')} name="email" required />
-              <label><b>Password</b></label>
-              <input type="password" placeholder="Enter Password" value={this.state.password} onChange={this.updateForm('password')} name="password" required />
-              <input type="button" value="Login" onClick= { () => this.signIn() } />
-              <input type="button" value="Register" onClick= { () => this.register() } />
+          <form className="auth-form">
+              <input className="email" type="text" placeholder="Enter Email" value={this.state.email} onChange={this.updateForm('email')} name="email" required />
+              <input className="password" type="password" placeholder="Enter Password" value={this.state.password} onChange={this.updateForm('password')} name="password" required />
+              <input className="login" type="button" value="Login" disabled={!this.isValid()} onClick= { () => this.signIn() } />
+              <input className="login" type="button" value="Register" disabled={!this.isValid()} onClick= { () => this.register() } />
           </form>
       );
     }

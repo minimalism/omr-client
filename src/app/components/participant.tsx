@@ -1,14 +1,26 @@
 import React from 'react';
 
+
+export class ParticipantData {
+    userId : string;
+
+    constructor(public id : any, data : any){
+        this.userId = data.user;
+    }
+}
+
 interface ParticipantProps {
-    id : string;
+    gameId : string;
+    data : ParticipantData;
+    isNext : boolean,
+    isMe : boolean;
 }
 
 class ParticipantState {
 
-    userId : string;
+    name : string = "Anonymous";
 
-    constructor(public id : string){
+    constructor(public participant : ParticipantData){
 
     }
 }
@@ -17,28 +29,33 @@ export default class Participant extends React.Component<ParticipantProps, Parti
 
     constructor(props){
         super(props);
-
-        this.state = new ParticipantState(this.props.id);
+        this.state = new ParticipantState(this.props.data);
     }
 
-    participantDataChanged(data){
+    participantDataChanged = (data) =>{
         var value = data.val();
         if (value){
             var state = this.state;
-            state.userId = value.user;
+            state.participant.userId = value.user;
             this.setState(state);
         }
     }
 
     componentWillMount(){
-        firebase.database().ref().child(`/participants/${this.props.id}`).on('value', this.participantDataChanged.bind(this));
+        firebase.database().ref().child(`games/${this.props.gameId}/participants/${this.state.participant.id}`).on('value', this.participantDataChanged);
     }
 
     componentWillUnmount(){
-        firebase.database().ref().child(`/participants/${this.props.id}`).off();
+        firebase.database().ref().child(`games/${this.props.gameId}/participants/${this.state.participant.id }`).off();
     }    
 
     render(){
-        return (<div className="participant"> { this.state.userId } </div>);
+        return (
+            <div className="participant"> 
+            <div className="participant-name">{ this.state.name }</div> 
+            { this.props.isMe && <div className="participant-detail">(Me)</div> }
+            { this.props.isNext && <div className="participant-detail">Current turn</div> }
+            </div>
+        );
     }
 }

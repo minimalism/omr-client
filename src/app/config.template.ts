@@ -15,5 +15,5 @@ export default class Config {
             hostname : 'localhost',
             post : 8000
         }
-    }
+    };
 };
