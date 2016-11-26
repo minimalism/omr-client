@@ -12,7 +12,8 @@ npm start
 ```
 
 ## Credits
-Big thanks to the fish man
+- Developed by [Andreas Carlson](http://andreascarlson.se)
 
-Based on: 
-- https://github.com/claudioc/electron-typescript-react-quick-start
+Thanks to: 
+- [iggyfisk](https://github.com/iggyfisk)
+- Based on [electron-typescript-react quickstart](https://github.com/claudioc/electron-typescript-react-quick-start)
