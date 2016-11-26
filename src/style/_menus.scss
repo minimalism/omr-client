@@ -1,0 +1,15 @@
+.auth-form{
+    height:auto;
+    margin:auto;
+    max-width:350px;
+    width:100%;
+    display:flex;
+    flex-direction:column;
+
+    input{
+        text-align:center;
+        width:100%;
+        margin:4px 0px;
+        padding:4px;
+    }
+}
