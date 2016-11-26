@@ -11,6 +11,15 @@
     }
 }
 
+.game-option{
+    cursor:pointer;
+    &:hover{
+        .label{
+            text-decoration:underline;
+        }
+    }
+}
+
 .game-header{
     display:flex;
     flex-wrap:wrap;

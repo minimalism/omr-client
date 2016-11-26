@@ -1,11 +1,10 @@
 import React from 'react';
-import Participant from './participant';
-import {ParticipantData} from './participant';
 import _ from 'lodash';
 import Electron from 'electron';
-import fs from 'fs';
-import FormData from 'form-data';
 import Config from '../config';
+import Participant from './participant';
+import {ParticipantData} from './participant';
+import Turn from './turn';
 
 enum Status {
     NotStarted = 0,
@@ -27,13 +26,14 @@ class GameData {
     myParticipant : ParticipantData;
     nextTurner : string;
     participants : ParticipantData[] = [];
+    showParticipants : boolean;
 
     constructor(public id : string){
     }
 }
 
-class GameOption{
-    constructor(public id : string, public title : string, public callback : () => void){ }
+export class GameButton{
+    constructor(public id : string, public icon : string, public title : string, public callback : () => void){ }
 }
 
 export default class Game extends React.Component<GameProperties, GameData> {
@@ -53,8 +53,8 @@ export default class Game extends React.Component<GameProperties, GameData> {
 
             state.participants = values.participants
                 ? _(values.participants)
-                    .orderBy('ordinal')
-                    .map((participant, id) => { return new ParticipantData(id, participant) })
+                    .map((participant, id) => { return new ParticipantData(id, participant) })                
+                    .orderBy('data.ordinal')
                     .value()
                 : [];
 
@@ -83,43 +83,14 @@ export default class Game extends React.Component<GameProperties, GameData> {
         firebase.database().ref().child(`/games/'${this.props.id}`).off();
     }
 
-    submitTurn = () => {
-        const cfg = new Config();
-
-        Electron.remote.dialog.showOpenDialog({
-            title: 'Please select a save file',
-            defaultPath: cfg.getClientSettings().savesDir,
-            filters: [ { name: 'Civ6 saves', extensions: ['Civ6Save'] } ],
-            properties: ['openFile']
-        }, (filePaths : string[]) => {
-            if (filePaths && filePaths.length == 1) {
-                const path = filePaths[0];
-                let form = new FormData();
-                form.append('gameId', this.state.id);
-                form.append('participantId', this.state.myParticipant.id);
-                form.append('file', fs.createReadStream(path));
-                const { hostname, uploadPath, port } = new Config().getAPISettings();
-                form.submit({
-                    host: hostname,
-                    path: uploadPath,
-                    port: port
-                }, (err, res) => {
-                    if (err){
-                        alert(`Could not upload turn: ${err.message}`);
-                    }
-                    else{
-                        alert("Thanks");
-                    }
-                });
-            }
-        });
-    }
 
     delete = () => {
         // First remove all participants of this game
         const allParticipantsDeleted = Promise.all( this.state.participants.map( participant => { 
             return firebase.database().ref().child(`/participants/${participant.id}`).remove()
         }));
+
+        // TODO: Delete turns if the game is started
 
         // Then delete the game itself
         allParticipantsDeleted.then((success) => {
@@ -147,6 +118,19 @@ export default class Game extends React.Component<GameProperties, GameData> {
         });
     }
 
+    startGame = () => {
+        const { id, participants } = this.state;
+
+        let startUpdate = {};
+        startUpdate[`games/${id}/status/`] = Status.Started; 
+        startUpdate[`games/${id}/nextTurner`] = participants[0].id; 
+        firebase.database().ref().update(startUpdate).then(() => {
+            // Game is started
+        }, (fail) => {
+            alert("An error occurred when attempting to start this game.");
+        });
+    }
+
     leave = () => {
         alert("TODO: Leave game");
     }
@@ -160,21 +144,18 @@ export default class Game extends React.Component<GameProperties, GameData> {
 
         if (this.state.status == Status.NotStarted){
             if (this.state.isHost){
-                options.push(new GameOption("btn-start", "Start", this.submitTurn));
-                options.push(new GameOption("btn-cancel", "Cancel game", this.delete));
+                options.push(new GameButton("btn-start", "icon-play", "Start", this.startGame));
+                options.push(new GameButton("btn-cancel", "icon-cancel", "Cancel game", this.delete));
             }
             else if (this.state.myParticipant){
-                options.push(new GameOption("btn-leave", "Leave game", this.leave));
+                options.push(new GameButton("btn-leave", "icon-cancel", "Leave game", this.leave));
             }
             else{
-                options.push(new GameOption("btn-join", "Join", this.join));
+                options.push(new GameButton("btn-join", "icon-plus", "Join", this.join));
             }
         }
         else if (this.state.myParticipant){
-            if (this.state.isMyTurn){
-                options.push(new GameOption("btn-submit", "Submit turn", this.submitTurn));
-            }
-            options.push(new GameOption("btn-resign", "Resign", this.resign));
+            options.push(new GameButton("btn-resign", "icon-flag-empty", "Resign", this.resign));
         }
 
         return options;
@@ -194,7 +175,7 @@ export default class Game extends React.Component<GameProperties, GameData> {
     }
 
     render(){
-        const { name, participants, id, myParticipant, nextTurner } = this.state;
+        const { name, participants, id, myParticipant, nextTurner, latestTurn, status } = this.state;
 
         return (<div className="game">
             <div className="game-header">
@@ -205,14 +186,18 @@ export default class Game extends React.Component<GameProperties, GameData> {
                     <div className="game-options">
                     { 
                         this.getGameOptions().map( option => { 
-                            return <button key={ option.id } className="game-option" onClick= { () => { option.callback() } }> { option.title } </button> 
+                            return (
+                                <div key={ option.id } className="game-option" onClick= { () => { option.callback() } }> 
+                                    <i className={ option.icon }></i><span className="label"> { option.title }</span> 
+                                </div>
+                            ) 
                         })
                     }
                     </div>
                 </div>
             </div>
             <div className="game-details">
-                <ol className="game-participant-list">
+                <ol className="game-participant-list collapse" id={`#participants-list-${id}`}>
                     { participants.map( participant => {
                          return <li key={ participant.id }><Participant 
                             key={ participant.id } 
@@ -223,6 +208,12 @@ export default class Game extends React.Component<GameProperties, GameData> {
                         }) 
                     }
                 </ol>
+
+                { status == Status.Started && 
+                    <Turn gameId={ id } 
+                          turnId = { latestTurn } 
+                          participantId = { nextTurner }
+                          isMyTurn = { myParticipant && myParticipant.id == nextTurner } /> }
             </div>
         </div>);
     }
