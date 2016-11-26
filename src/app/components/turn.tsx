@@ -121,7 +121,7 @@ export default class Turn extends React.Component<TurnProps, TurnState> {
     }
 
     render(){
-        const turnNumber = this.props.turnId || -1; 
+        const turnNumber = this.props.turnId == undefined ? -1 : this.props.turnId;  
         return <div className="turn"><div className="turnName">Turn #{ turnNumber+1 }</div>
         { 
             this.getTurnOptions().map( option => { 
