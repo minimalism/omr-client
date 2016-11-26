@@ -1,9 +1,9 @@
 import React from 'react';
 import Participant from './participant';
 import {ParticipantData} from './participant';
-import * as _ from 'lodash';
-import * as Electron from 'electron';
-import * as fs from 'fs';
+import _ from 'lodash';
+import Electron from 'electron';
+import fs from 'fs';
 import FormData from 'form-data';
 import Config from '../config';
 
@@ -51,12 +51,12 @@ export default class Game extends React.Component<GameProperties, GameData> {
             state.name = values.name;
             state.status = values.status;
 
-            if (values.participants){
-                state.participants = _.map(values.participants, (participant, id) => { return new ParticipantData(id, participant) });
-            }
-            else{
-                state.participants = [];
-            }
+            state.participants = values.participants
+                ? _(values.participants)
+                    .orderBy('ordinal')
+                    .map((participant, id) => { return new ParticipantData(id, participant) })
+                    .value()
+                : [];
 
             const currentUserId = firebase.auth().currentUser.uid;
             state.isHost = this.state.host == currentUserId;
@@ -70,6 +70,7 @@ export default class Game extends React.Component<GameProperties, GameData> {
             else{
                 state.isMyTurn = false;
             }
+
             this.setState(state);
         }
     }
@@ -193,13 +194,14 @@ export default class Game extends React.Component<GameProperties, GameData> {
     }
 
     render(){
+        const { name, participants, id, myParticipant, nextTurner } = this.state;
 
         return (<div className="game">
             <div className="game-header">
-                <div className="game-name">{ this.state.name }</div>
+                <div className="game-name">{name}</div>
                 <div className="game-header-details">
                     <div className="game-status">{ this.printStatus() }</div>
-                    <div className="game-participant-count">({ this.state.participants.length } players)</div>
+                    <div className="game-participant-count">({participants.length} players)</div>
                     <div className="game-options">
                     { 
                         this.getGameOptions().map( option => { 
@@ -211,13 +213,13 @@ export default class Game extends React.Component<GameProperties, GameData> {
             </div>
             <div className="game-details">
                 <ol className="game-participant-list">
-                    { this.state.participants.map( participant => {
+                    { participants.map( participant => {
                          return <li key={ participant.id }><Participant 
                             key={ participant.id } 
-                            gameId= { this.state.id } 
+                            gameId= { id } 
                             data= { participant } 
-                            isMe = { this.state.myParticipant && this.state.myParticipant.id == participant.id }
-                            isNext = {this.state.nextTurner == participant.id } /> </li>
+                            isMe = { myParticipant && myParticipant.id == participant.id }
+                            isNext = {nextTurner == participant.id } /> </li>
                         }) 
                     }
                 </ol>

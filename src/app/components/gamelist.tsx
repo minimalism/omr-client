@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 
 class GamesListState {
     gameIds : string[] = [];
-    newGameName : string;
+    newGameName : string = '';
 }
 
 export default class GamesList extends React.Component<{}, GamesListState> {
@@ -31,7 +31,7 @@ export default class GamesList extends React.Component<{}, GamesListState> {
             </div>
         );
     }
-    
+
     newGameNameChanged = (e) => {
         let state = this.state;
         state.newGameName = e.target.value;
@@ -52,7 +52,7 @@ export default class GamesList extends React.Component<{}, GamesListState> {
         update[`games/${newGameKey}`] = gameData;
 
         firebase.database().ref().update(update).then((response) => {
-            /* Game creation success */ 
+            /* Game creation success */
             let participantUpdate = {};
 
             const newParticipantKey = firebase.database().ref().child(`games/${newGameKey}/participants`).push().key;
@@ -60,14 +60,14 @@ export default class GamesList extends React.Component<{}, GamesListState> {
                 user : currentUserId,
                 ordinal : 0
             };
+            
             participantUpdate[`games/${newGameKey}/participants/${newParticipantKey}`] = participantData; 
-
             firebase.database().ref().update(participantUpdate).then(() => {
                 // Game participant creation success
                 // TODO: Commit transaction
-            
+
             }, (fail) => {
-                // Game patricipant creation fail  
+                // Game patricipant creation fail
                 // TODO: Roll back transaction
             })
 
